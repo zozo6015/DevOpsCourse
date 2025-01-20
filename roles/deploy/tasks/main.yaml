@@ -16,7 +16,7 @@
     url: http://{{ inventory_hostname }}
     return_content: true
   register: check
-  failed_when: DevOps in check.content
+  failed_when: "DevOps" in check.content
 
 - debug: var=check
 
