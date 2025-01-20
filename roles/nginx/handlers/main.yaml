@@ -1,4 +1,4 @@
-- name: start nginx
+- name: Start nginx
   systemd:
     name: nginx
     state: start
