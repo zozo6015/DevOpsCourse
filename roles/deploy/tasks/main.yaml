@@ -3,4 +3,4 @@
     repo: https://github.com/zozo6015/DevOpsCourse.git
     dest: /tmp/DevOpsCourse
 
-- name: Copy 
+# - name: Copy 
