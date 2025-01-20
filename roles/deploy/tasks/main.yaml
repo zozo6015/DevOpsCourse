@@ -1,6 +1,6 @@
 - name: Deploy index.yaml from git repository
   ansible.builtin.git:
-    repo: https://github.com/zozo6015/DevOpsCourse.git
+    repo: "{{ git_repo }}"
     dest: /tmp/DevOpsCourse
 
 # - name: Copy 
