@@ -3,4 +3,9 @@
     repo: "{{ git_repo }}"
     dest: /tmp/DevOpsCourse
 
-# - name: Copy 
+- name: Copy index.html into the webroot
+  ansible.builtin.copy:
+    src: /tmp/DevOpsCourse/index.html
+    dest: /usr/share/nginx/html/index.html
+    remote: yes
+  notify: Restart nginx
