@@ -13,4 +13,5 @@
   ansible.builtin.apt:
     name: nginx
     state: present
-  notify: Start nginx
+  notify:
+    - Start nginx
