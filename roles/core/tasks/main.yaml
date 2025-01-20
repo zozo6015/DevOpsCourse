@@ -3,4 +3,13 @@
     update_cache: true
     upgrade: yes
 
-    
+- name: Install dependencies
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - gnupg2
+    - ca-certificates
+    - lsb-release
+    - debian-archive-keyring
