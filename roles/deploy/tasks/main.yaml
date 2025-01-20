@@ -17,6 +17,8 @@
     return_content: true
   register: check
 
+- debug: msg=check
+
 - name: Fail if the content is not what we expect
   ansible.builtin.fail:
     msg: "The content of the website is not as expected!"
