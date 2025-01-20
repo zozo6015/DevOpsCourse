@@ -1,2 +1,7 @@
+- name: Add nginx repository key
+  shell: curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+  failed_when: "'ERROR' in command_result.stderr"
+
 - name: Add nginx repository
-  
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/mainline/debian {{ ansible_}} nginx"
