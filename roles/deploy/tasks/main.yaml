@@ -17,7 +17,7 @@
     return_content: true
   register: check
 
-- debug: vars=check
+- debug: var=check
 
 - name: Fail if the content is not what we expect
   ansible.builtin.fail:
