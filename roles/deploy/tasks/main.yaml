@@ -16,4 +16,4 @@
     url: http://{{ inventory_hostname }}
     return_content: true
   register: this
-  failed_when: this is failed or "'Hello DevOps Coursants' not in this.content"
+  failed_when: this is failed or "'Hello DevOps Coursants\n' not in this.content"
