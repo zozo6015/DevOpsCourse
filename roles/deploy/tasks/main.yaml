@@ -13,7 +13,7 @@
 
 - name: Check the website
   ansible.builtin.uri:
-    url: http://{{ hostvars[inventory_hostname].ansible_ssh_host }}
+    url: http://{{ hostvars[webserver].ansible_ssh_host }}
     return_content: true
   register: this
   failed_when: this is failed or "'Hello DevOps Coursants' not in this.content"
