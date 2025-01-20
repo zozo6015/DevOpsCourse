@@ -7,5 +7,5 @@
   ansible.builtin.copy:
     src: /tmp/DevOpsCourse/index.html
     dest: /usr/share/nginx/html/index.html
-    remote: yes
+    remote_src: yes
   notify: Restart nginx
