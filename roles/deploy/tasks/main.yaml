@@ -9,4 +9,11 @@
     dest: /usr/share/nginx/html/index.html
     remote_src: yes
   notify:
-    - Restart nginx
+    - restart nginx
+
+- name: Check the website
+  ansible.builtin.uri:
+    url: http://{{ ansible_inventory }}
+    return_content: true
+  register: this
+  failed_when: this is failed or "'Hello DevOps Coursants' not in this.content"
