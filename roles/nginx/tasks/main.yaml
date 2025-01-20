@@ -14,4 +14,4 @@
     name: nginx
     state: present
   notify:
-    - Start nginx
+    - start nginx
