@@ -13,3 +13,4 @@
     - ca-certificates
     - lsb-release
     - debian-archive-keyring
+    - git
