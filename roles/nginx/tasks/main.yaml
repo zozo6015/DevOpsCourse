@@ -15,3 +15,9 @@
     state: present
   notify:
     - start nginx
+
+- name: Enable nginx service
+  ansible.builtin.systemd:
+    name: nginx
+    state: start
+    enabled: true
