@@ -10,9 +10,7 @@
     update_cache: true
 
 - name: Install nginx
-  ansible.buildin.apt:
+  ansible.builtin.apt:
     name: nginx
     state: present
   notify: Start nginx
-
-
