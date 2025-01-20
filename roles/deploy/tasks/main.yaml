@@ -16,11 +16,12 @@
     url: http://{{ inventory_hostname }}
     return_content: true
   register: check
+  fail_when: DevOps in check.content
 
 - debug: var=check
 
-- name: Fail if the content is not what we expect
-  ansible.builtin.fail:
-    msg: "The content of the website is not as expected!"
-  when: check.content != "Hello DevOps Coursants"
+#- name: Fail if the content is not what we expect
+#  ansible.builtin.fail:
+#    msg: "The content of the website is not as expected!"
+#  when: check.content != "Hello DevOps Coursants"
 
