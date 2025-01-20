@@ -8,4 +8,11 @@
     state: present
     filename: nginx 
     update_cache: true
+
+- name: Install nginx
+  ansible.buildin.apt:
+    name: nginx
+    state: present
   notify: Start nginx
+
+
