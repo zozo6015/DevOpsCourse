@@ -1,0 +1,3 @@
+git_repo: "https://github.com/zozo6015/DevOpsCourse.git"
+check_message: "Hello DevOps Coursants"
+check_message_2: "Hello DevOps Coursants after the change"

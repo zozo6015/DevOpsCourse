@@ -1,0 +1,28 @@
+- name: install docker module via ansible galaxy
+  community.general.ansible_galaxy_install:
+    type: collection
+    name: containers.podman
+  run_once: true
+  connection: local
+  become: no
+
+- name: create the docker container locally
+  block:
+    - name: pull the nginx:mainline docker image
+      containers.podman.podman_image:
+        name: nginx:mainline
+        state: present
+
+    - name: Start the nginx container
+      containers.podman.podman_container:
+        name: nginx
+        image: nginx:mainline
+        volumes: /Users/zozo/k8s/DevOpsCourse/course2/:/usr/share/nginx/html/
+        hostname: webserver
+        state: started
+        recreate: true
+        publish: 8000:80
+        restart: true
+        restart_policy: on-failure
+  connection: local
+  become: no

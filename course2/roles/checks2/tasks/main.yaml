@@ -1,0 +1,5 @@
+- name: import task from basic
+  include_role: 
+    name: checks
+    tasks_from: basic
+  failed_when: '"Hello DevOps Coursants after the change" not in check1.content'

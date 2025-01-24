@@ -1,0 +1,12 @@
+
+- name: Check the website
+  ansible.builtin.uri:
+    url: http://localhost:8000
+    return_content: true
+    force: true
+  register: check1
+  connection: local
+  become: false
+
+- debug:
+    var: check1.content

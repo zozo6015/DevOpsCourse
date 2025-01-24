@@ -1,0 +1,15 @@
+- name: change the content of index.html
+  lineinfile:
+    path: /Users/zozo/k8s/DevOpsCourse/course2/index.html
+    regex: '{{ check_message }}'
+    line: '{{ check_message_2 }}'
+    state: present
+    backup: true
+  connection: local
+  become: false
+
+- name: add a 5 second sleep time
+  ansible.builtin.pause:
+    seconds: 5
+  connection: local
+  become: false

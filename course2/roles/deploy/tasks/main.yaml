@@ -11,9 +11,12 @@
   notify:
     - restart nginx
 
-- name: run checks
-  include_tasks:
-    file: checks/tasks/main.yaml
+- name: Check the website
+  ansible.builtin.uri:
+    url: http://{{ inventory_hostname }}
+    return_content: true
+  register: check
+  failed_when: '"Hello DevOps Coursants" not in check.content'
 
 - name: Run son cleanup
   ansible.builtin.file:

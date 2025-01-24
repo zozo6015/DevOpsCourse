@@ -1,0 +1,4 @@
+- name: import task from basic
+  ansible.builtin.include_role: 
+    name: checks
+    tasks_from: "{{ task }}"

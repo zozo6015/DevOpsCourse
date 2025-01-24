@@ -1,0 +1,11 @@
+- hosts: webserver
+  become: true
+  roles:
+    - role: docker
+    - role: checks
+      vars:
+        task: basic
+    - role: changes
+    - role: checks
+      vars:
+        task: basic2
