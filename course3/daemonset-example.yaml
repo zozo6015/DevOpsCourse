@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: example-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: daemon-app
+  template:
+    metadata:
+      labels:
+        app: daemon-app
+    spec:
+      containers:
+      - name: daemon-container
+        image: busybox
+        command:
+        - sleep
+        - "3600"
