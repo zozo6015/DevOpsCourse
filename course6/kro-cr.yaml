@@ -1,0 +1,13 @@
+apiVersion: kro.run/v1alpha1   
+kind: Drupal
+metadata:
+  name: zo-test
+spec:
+  name: pg-test
+  pgUser: drupal-user
+  pgPass: GpD4poXNkAgZEqEE
+  pgSupPass: 'BY22keOlDSOjRyB+Hwho4GMz/EKBjj+h'
+  pgDb: drupal
+  tag: latest
+
+

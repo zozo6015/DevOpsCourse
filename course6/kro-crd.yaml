@@ -1,0 +1,194 @@
+apiVersion: kro.run/v1alpha1
+kind: ResourceGraphDefinition
+metadata:
+  name: drupal-operator
+spec:
+  schema:
+    apiVersion: v1alpha1
+    kind: Drupal
+    spec:
+      name: string
+      image: string | default=drupal
+      tag: string
+      pgPass: string
+      pgUser: string
+      pgSupPass: string
+      pgDb: string
+    status:
+      # Status fields with auto-inferred types
+      conditions:
+      - type: string
+        status: string
+  resources:
+    - id: cluster
+      template:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: ${schema.spec.name}
+        spec:
+          instances: 3
+          storage:
+            size: 1Gi
+          bootstrap:
+            initdb:
+              database: ${schema.spec.pgDb}  # The database to connect to for initialization.
+              owner: ${schema.spec.pgUser}   # The owner of the database. This user WILL NOT BE CREATED automatically.
+              secret:
+                name: ${schema.spec.name}-pg-credentials
+#              postInitTemplateSQL:
+#                - "CREATE DATABASE ${schema.spec.pgDb};"
+#                - "CREATE USER ${schema.spec.pgUser} WITH PASSWORD '${schema.spec.pgPass}';" # VERY IMPORTANT: Use a secret for the password!
+#                - "GRANT ALL PRIVILEGES ON DATABASE ${schema.spec.pgDb} TO ${schema.spec.pgUser};"
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: ${schema.spec.name}-pg-superuser
+
+    - id: persistentVolumeClaimModules
+      template:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: ${schema.spec.name}-pvc-modules
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+    - id: persistentVolumeClaimProfiles
+      template:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: ${schema.spec.name}-pvc-profiles
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+    - id: persistentVolumeClaimThemes
+      template:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: ${schema.spec.name}-pvc-themes
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+    - id: persistentVolumeClaimSites
+      template:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: ${schema.spec.name}-pvc-sites
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+    - id: deployment
+      template:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: ${schema.spec.name}-drupal
+          labels:
+            app: ${schema.spec.name}-drupal
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: ${schema.spec.name}-drupal
+          template:
+            metadata:
+              labels:
+                app: ${schema.spec.name}-drupal
+            spec:
+              volumes:
+                - name: sites-modules
+                  persistentVolumeClaim:
+                    claimName: ${schema.spec.name}-pvc-modules
+                - name: sites-profiles
+                  persistentVolumeClaim:
+                    claimName: ${schema.spec.name}-pvc-profiles
+                - name: sites-themes
+                  persistentVolumeClaim:
+                    claimName: ${schema.spec.name}-pvc-themes
+                - name: sites-sites
+                  persistentVolumeClaim:
+                    claimName: ${schema.spec.name}-pvc-sites
+              containers:
+                - name: ${schema.spec.name}
+                  image: ${schema.spec.image}:${schema.spec.tag}
+                  ports:
+                    - containerPort: 80
+                  volumeMounts:
+                    - name: sites-modules
+                      mountPath: /var/www/html/modules
+                    - name: sites-profiles
+                      mountPath: /var/www/html/profiles
+                    - name: sites-themes
+                      mountPath: /var/www/html/themes
+                    - name: sites-sites
+                      mountPath: /var/www/html/sites
+                  livenessProbe:
+                    httpGet:
+                      path: /
+                      port: 80
+                      scheme: HTTP
+                    initialDelaySeconds: 5
+                    timeoutSeconds: 3
+                    periodSeconds: 5
+                    successThreshold: 1
+                    failureThreshold: 3
+                  readinessProbe:
+                    httpGet:
+                      path: /
+                      port: 80
+                      scheme: HTTP
+                    initialDelaySeconds: 3
+                    timeoutSeconds: 3
+                    periodSeconds: 3
+                    successThreshold: 1
+                    failureThreshold: 5
+    - id: secret
+      template:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: ${schema.spec.name}-pg-credentials
+        type: Opaque
+        stringData:
+#          username: ${schema.spec.pgUser}
+#          password: ${schema.spec.pgPass}
+    - id: secretSupPg
+      template:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: ${schema.spec.name}-pg-superuser
+        type: Opaque
+        stringData:
+#          username: postgres
+#          password: ${schema.spec.pgSupPass}
+    - id: service
+      template:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: ${schema.spec.name}-service
+        spec:
+          selector:
+            app: ${schema.spec.name}-drupal
+          type: ClusterIP
+          ports:
+            - name: http
+              port: 80
+              targetPort: 80
+              protocol: TCP

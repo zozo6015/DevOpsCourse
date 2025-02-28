@@ -1,0 +1,5 @@
+    {
+      "log_level": "debug",
+      "max_connections": 150,
+      "commpression_type": "gzip"
+    }

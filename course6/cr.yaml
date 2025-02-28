@@ -1,0 +1,8 @@
+apiVersion: example.com/v1alpha1
+kind: Database
+metadata:
+  name: my-database
+  namespace: default
+spec:
+  size: 3
+  storageClass: standard

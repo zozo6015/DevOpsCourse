@@ -1,0 +1,7 @@
+resources:
+#  - deployment.yaml
+  - service.yaml
+#  - configmap.yaml
+  - nginx-deployment.yaml
+#namespace: prod
+

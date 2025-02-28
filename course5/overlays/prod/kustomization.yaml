@@ -1,0 +1,23 @@
+resources:
+  - ../../base
+  - namespace.yaml
+namePrefix: prod-
+
+patches:
+  - target:
+      kind: Deployment
+      name: nginx
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 5
+namespace: prod
+images:
+  - name: nginx
+    newTag: "latest"
+
+configMapGenerator:
+  - name: nginx-config
+    namespace: prod
+    files:
+      - config.json

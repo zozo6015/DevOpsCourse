@@ -1,0 +1,6 @@
+- name: Check the website
+  ansible.builtin.uri:
+    url: http://{{ inventory_hostname }}
+    return_content: true
+  register: check
+  failed_when: '"{{ check_message }}" not in check.content'
