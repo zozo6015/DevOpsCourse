@@ -8,6 +8,6 @@ spec:
   pgPass: GpD4poXNkAgZEqEE
   pgSupPass: 'BY22keOlDSOjRyB+Hwho4GMz/EKBjj+h'
   pgDb: drupal
-  tag: latest
+  tag: php8.4-apache-bullseye
 
 
