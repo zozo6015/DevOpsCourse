@@ -165,8 +165,8 @@ spec:
           name: ${schema.spec.name}-pg-credentials
         type: Opaque
         stringData:
-#          username: ${schema.spec.pgUser}
-#          password: ${schema.spec.pgPass}
+          username: ${schema.spec.pgUser}
+          password: ${schema.spec.pgPass}
     - id: secretSupPg
       template:
         apiVersion: v1
@@ -175,8 +175,8 @@ spec:
           name: ${schema.spec.name}-pg-superuser
         type: Opaque
         stringData:
-#          username: postgres
-#          password: ${schema.spec.pgSupPass}
+          username: postgres
+          password: ${schema.spec.pgSupPass}
     - id: service
       template:
         apiVersion: v1
