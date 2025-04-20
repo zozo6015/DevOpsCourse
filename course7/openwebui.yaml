@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: openweb-ui
+spec:
+  selector:
+    matchLabels:
+      app: openweb-ui # has to match .spec.template.metadata.labels
+  serviceName: "openweb-ui"
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: openweb-ui # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: openweb-ui
+          image: ghcr.io/open-webui/open-webui:v0.6.5
+          ports:
+            - containerPort: 8080
+              name: web
+          volumeMounts:
+            - name: openwebui
+              mountPath: /app/backend/data
+  volumeClaimTemplates:
+    - metadata:
+        name: openwebui
+      spec:
+        accessModes: ["ReadWriteMany"]
+        storageClassName: nfs
+        resources:
+          requests:
+            storage: 100Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openweb-ui
+spec:
+  selector:
+    app: openweb-ui
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: web
