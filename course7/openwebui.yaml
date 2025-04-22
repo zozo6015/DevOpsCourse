@@ -14,9 +14,6 @@ spec:
         app: openweb-ui # has to match .spec.selector.matchLabels
     spec:
       terminationGracePeriodSeconds: 10
-      envFrom:
-        configMapRef:
-        - name: openweb-ui
       containers:
         - name: openweb-ui
           image: ghcr.io/open-webui/open-webui:v0.6.5
@@ -26,6 +23,9 @@ spec:
           volumeMounts:
             - name: openwebui
               mountPath: /app/backend/data
+          envFrom:
+          - configMapRef:
+              name: openweb-ui
       volumes:
       - name: openwebui
         persistentVolumeClaim:
