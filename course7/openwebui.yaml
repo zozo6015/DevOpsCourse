@@ -14,15 +14,15 @@ spec:
         app: openweb-ui # has to match .spec.selector.matchLabels
     spec:
       terminationGracePeriodSeconds: 10
+      envFrom:
+        configMapRef:
+        - name: openweb-ui
       containers:
         - name: openweb-ui
           image: ghcr.io/open-webui/open-webui:v0.6.5
           ports:
             - containerPort: 8080
               name: web
-          envFrom:
-            configMapRef:
-            - name: openweb-ui
           volumeMounts:
             - name: openwebui
               mountPath: /app/backend/data
