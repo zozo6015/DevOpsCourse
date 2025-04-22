@@ -23,16 +23,10 @@ spec:
           volumeMounts:
             - name: openwebui
               mountPath: /app/backend/data
-  volumeClaimTemplates:
-    - metadata:
-        name: openwebui
-      spec:
-        accessModes: ["ReadWriteMany"]
-        storageClassName: nfs
-        resources:
-          requests:
-            storage: 100Gi
-
+      volumes:
+      - name: openwebui
+        persistentVolumeClaim:
+          claimName: openwebui
 ---
 apiVersion: v1
 kind: Service
@@ -45,3 +39,17 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: web
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openwebui
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: nfs
