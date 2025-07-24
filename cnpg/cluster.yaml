@@ -6,12 +6,54 @@ spec:
   instances: 3
   postgresql:
     parameters:
-      max_worker_processes: "60"
+      shared_buffers: "512MB"
+      effective_cache_size: "1GB"
+      work_mem: "4MB"
+      maintenance_work_mem: "128MB"
+      
+      # Connection pooling
+      max_connections: "200"  # CNPG uses PgBouncer internally
+      
+      # Checkpoint settings
+      checkpoint_completion_target: "0.9"
+      checkpoint_timeout: "15min"
+      max_wal_size: "1GB"
+      min_wal_size: "512MB"
+      
+      # Performance
+      random_page_cost: "1.1"  # For SSD
+      effective_io_concurrency: "200"
+      
+      # Autovacuum
+      autovacuum_max_workers: "2"
+      autovacuum_naptime: "2min"
+      autovacuum_vacuum_scale_factor: "0.1"
+      autovacuum_analyze_scale_factor: "0.05"
     pg_hba:
       # To access through TCP/IP you will need to get username
       # and password from the secret cluster-example-custom-app
       - host all all all md5
-
+  pooler:
+    enabled: true
+    type: "pgbouncer"
+    poolMode: "transaction"  # or "session" based on your needs
+    parameters:
+      max_client_conn: "1000"
+      default_pool_size: "25"
+  monitoring:
+    enabled: true
+    customQueriesConfigMap:
+      - name: "pg-custom-queries"
+        key: "queries.yaml"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-type
+            operator: In
+            values:
+            - database
 
   # Example of rolling update strategy:
   # - unsupervised: automated update of the primary once all
@@ -25,8 +67,8 @@ spec:
     size: 10Gi
   resources:
     requests:
-      memory: "1Gi"
-      cpu: "1"
+      memory: "2Gi"
+      cpu: "2"
     limits:
       memory: "2Gi"
       cpu: "2"
