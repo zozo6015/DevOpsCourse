@@ -23,8 +23,8 @@ spec:
             limits:
               cpu: "0.5"
               memory: 500Mi
-      pgbouncer:
-        poolMode: session
-        parameters:
-          max_client_conn: "200"
-          default_pool_size: "10"
+  pgbouncer:
+    poolMode: session
+    parameters:
+      max_client_conn: "200"
+      default_pool_size: "10"
