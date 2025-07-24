@@ -45,16 +45,6 @@ spec:
 #    customQueriesConfigMap:
 #      - name: "pg-custom-queries"
 #        key: "queries.yaml"
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-type
-            operator: In
-            values:
-            - database
-
   # Example of rolling update strategy:
   # - unsupervised: automated update of the primary once all
   #                 replicas have been upgraded (default)
