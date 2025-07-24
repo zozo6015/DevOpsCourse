@@ -33,13 +33,13 @@ spec:
       # To access through TCP/IP you will need to get username
       # and password from the secret cluster-example-custom-app
       - host all all all md5
-#  pooler:
-#    enabled: true
-#    type: "pgbouncer"
-#    poolMode: "transaction"  # or "session" based on your needs
-#    parameters:
-#      max_client_conn: "1000"
-#      default_pool_size: "25"
+  pooler:
+    enabled: true
+    type: "pgbouncer"
+    poolMode: "transaction"  # or "session" based on your needs
+    parameters:
+      max_client_conn: "1000"
+      default_pool_size: "25"
 #  monitoring:
 #    enabled: true
 #    customQueriesConfigMap:
