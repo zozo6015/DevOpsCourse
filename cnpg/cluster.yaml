@@ -6,29 +6,81 @@ spec:
   instances: 3
   postgresql:
     parameters:
-      shared_buffers: "512MB"
-      effective_cache_size: "1GB"
-      work_mem: "4MB"
-      maintenance_work_mem: "128MB"
+      shared_buffers: "1GB"
       
-      # Connection pooling
-      max_connections: "200"  # CNPG uses PgBouncer internally
+      # Effective cache size - estimate of OS cache available
+      # ~70% of total memory
+      effective_cache_size: "2.8GB"
       
-      # Checkpoint settings
+      # Work memory - per operation (sort, hash)
+      # Conservative to avoid OOM with multiple connections
+      work_mem: "8MB"
+      
+      # Maintenance work memory (VACUUM, CREATE INDEX)
+      maintenance_work_mem: "256MB"
+      
+      # Connection Settings
+      max_connections: "100"  # Reduce if using connection pooler
+      
+      # WAL and Checkpoint Settings
+      wal_buffers: "16MB"
+      min_wal_size: "1GB"
+      max_wal_size: "2GB"
       checkpoint_completion_target: "0.9"
       checkpoint_timeout: "15min"
-      max_wal_size: "1GB"
-      min_wal_size: "512MB"
       
-      # Performance
-      random_page_cost: "1.1"  # For SSD
-      effective_io_concurrency: "200"
+      # Background Writer
+      bgwriter_delay: "200ms"
+      bgwriter_lru_maxpages: "100"
+      bgwriter_lru_multiplier: "2.0"
       
-      # Autovacuum
+      # Query Planner
+      random_page_cost: "1.1"  # For SSD storage
+      cpu_tuple_cost: "0.01"
+      cpu_index_tuple_cost: "0.005"
+      cpu_operator_cost: "0.0025"
+      
+      # Parallel Query Settings (limited with 2 cores)
+      max_parallel_workers_per_gather: "1"
+      max_parallel_workers: "2"
+      max_parallel_maintenance_workers: "1"
+      
+      # Statement Timeout (prevent long-running queries)
+      statement_timeout: "300s"
+      
+      # Logging
+      log_statement: "ddl"
+      log_duration: "off"
+      log_min_duration_statement: "1000ms"  # Log slow queries
+      log_checkpoints: "on"
+      log_connections: "off"
+      log_disconnections: "off"
+      log_temp_files: "0"
+      
+      # Statistics
+      track_activities: "on"
+      track_counts: "on"
+      track_io_timing: "on"
+      track_functions: "pl"
+      
+      # Autovacuum (important for performance)
+      autovacuum: "on"
       autovacuum_max_workers: "2"
-      autovacuum_naptime: "2min"
+      autovacuum_naptime: "1min"
+      autovacuum_vacuum_threshold: "50"
+      autovacuum_analyze_threshold: "50"
       autovacuum_vacuum_scale_factor: "0.1"
       autovacuum_analyze_scale_factor: "0.05"
+      autovacuum_vacuum_cost_limit: "200"
+      
+      # Lock Management
+      deadlock_timeout: "1s"
+      lock_timeout: "0"
+      
+      # Other Performance Settings
+      temp_buffers: "8MB"
+      huge_pages: "off"  # Not typically available in containers
+
     pg_hba:
       # To access through TCP/IP you will need to get username
       # and password from the secret cluster-example-custom-app
@@ -57,8 +109,8 @@ spec:
     size: 10Gi
   resources:
     requests:
-      memory: "2Gi"
+      memory: "4Gi"
       cpu: "2"
     limits:
-      memory: "2Gi"
+      memory: "4Gi"
       cpu: "2"
