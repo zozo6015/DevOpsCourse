@@ -2,29 +2,14 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
   name: pg-mail
+  namespace: cnpg
 spec:
   cluster:
     name: mail
-  instances: 3
+  instances: 1
   type: rw
-
-  template:
-    metadata:
-      labels:
-        app: pooler
-    spec:
-      containers:
-        - name: pgbouncer
-          image: ghcr.io/cloudnative-pg/pgbouncer:1.24.1
-          resources:
-            requests:
-              cpu: "0.1"
-              memory: 100Mi
-            limits:
-              cpu: "0.5"
-              memory: 500Mi
   pgbouncer:
-    poolMode: session
+    poolMode: transaction
     parameters:
-      max_client_conn: "200"
-      default_pool_size: "10"
+      default_pool_size: "25"
+      max_client_conn: "1000"
