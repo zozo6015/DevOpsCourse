@@ -4,6 +4,7 @@ metadata:
   name: mail
 spec:
   instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
   postgresql:
     parameters:
       shared_buffers: "1GB"
